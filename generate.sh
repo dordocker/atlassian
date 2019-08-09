@@ -1,0 +1,1 @@
+java -jar atlassian-agent.jar -d -m wangcl@dorabc.com -n BAT -p jira -o http://jiar.dorabc.com -s BJRX-WX2P-2OYK-BU1R

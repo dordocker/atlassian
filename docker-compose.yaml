@@ -1,0 +1,77 @@
+version: '3.7'
+services:
+  jira:
+    image: wangcl/atlassian-jira:8.3.1
+    restart: always
+    build:
+      context: jira
+    links:
+      - database
+    volumes:
+      - jira-data:/var/atlassian/jira
+
+  # confluence:
+  #   image: cptactionhank/atlassian-confluence:6.9.0
+  #   restart: always
+  #   links:
+  #     - database
+  #   volumes:
+  #     - confluence-data:/var/atlassian/confluence
+
+  # bitbucket:
+  #   image: atlassian/bitbucket-server:5.10.1
+  #   restart: always
+  #   links:
+  #     - database
+  #   volumes:
+  #     - bitbucket-data:/var/atlassian/application-data/bitbucket
+
+  database:
+    image: postgres:11
+    restart: always
+    ports:
+     - "5432:5432"
+    environment:
+       POSTGRES_USER: postgres
+       POSTGRES_PASSWORD: postgres
+    volumes:
+      - database-data:/var/lib/postgresql/data
+  nginx:
+    image: nginx
+    restart: always
+    ports:
+      - "80:80"
+    links:
+      - jira
+      # - confluence
+      # - bitbucket
+    volumes:
+    - ./:/src
+    command: bash /src/scripts/run_nginx.sh
+    environment:
+    - DOMAIN=dyrs.online
+volumes:
+  jira-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /opt/data/jira-data
+      o: bind
+  # confluence-data:
+  #   driver: local
+  #   driver_opts:
+  #     type: none
+  #     device: /opt/data/confluence-data
+  #     o: bind
+  # bitbucket-data:
+  #   driver: local
+  #   driver_opts:
+  #     type: none
+  #     device: /opt/data/bitbucket-data
+  #     o: bind
+  database-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /opt/data/database-data
+      o: bind
