@@ -9,6 +9,9 @@ services:
       - database
     volumes:
       - jira-data:/var/atlassian/jira
+    networks:
+      atlassian_network:
+        ipv4_address: 172.18.0.4
 
   # confluence:
   #   image: cptactionhank/atlassian-confluence:6.9.0
@@ -18,14 +21,19 @@ services:
   #   volumes:
   #     - confluence-data:/var/atlassian/confluence
 
-  # bitbucket:
-  #   image: atlassian/bitbucket-server:5.10.1
-  #   restart: always
-  #   links:
-  #     - database
-  #   volumes:
-  #     - bitbucket-data:/var/atlassian/application-data/bitbucket
-
+  bitbucket:
+    image: atlassian/bitbucket-server:6.3.1
+    restart: always
+    build:
+      context: bitbucket
+    links:
+      - database
+    volumes:
+      - bitbucket-data:/var/atlassian/application-data/bitbucket
+    networks:
+      atlassian_network:
+        ipv4_address: 172.18.0.3
+        
   database:
     image: postgres:11
     restart: always
@@ -44,7 +52,7 @@ services:
     links:
       - jira
       # - confluence
-      # - bitbucket
+      - bitbucket
     volumes:
     - ./:/src
     command: bash /src/scripts/run_nginx.sh
@@ -63,15 +71,23 @@ volumes:
   #     type: none
   #     device: /opt/data/confluence-data
   #     o: bind
-  # bitbucket-data:
-  #   driver: local
-  #   driver_opts:
-  #     type: none
-  #     device: /opt/data/bitbucket-data
-  #     o: bind
+  bitbucket-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /opt/data/bitbucket-data
+      o: bind
   database-data:
     driver: local
     driver_opts:
       type: none
       device: /opt/data/database-data
       o: bind
+
+networks:
+  atlassian_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.0.0/16
+        - gateway: 172.18.0.1
