@@ -44,6 +44,9 @@ services:
        POSTGRES_PASSWORD: postgres
     volumes:
       - database-data:/var/lib/postgresql/data
+    networks:
+      atlassian_network:
+        ipv4_address: 172.18.0.5
   nginx:
     image: nginx
     restart: always
@@ -56,6 +59,9 @@ services:
     volumes:
     - ./:/src
     command: bash /src/scripts/run_nginx.sh
+    networks:
+      atlassian_network:
+        ipv4_address: 172.18.0.6
     environment:
     - DOMAIN=dyrs.online
 volumes:
@@ -90,4 +96,4 @@ networks:
       driver: default
       config:
         - subnet: 172.18.0.0/16
-        - gateway: 172.18.0.1
+        # - gateway: 172.18.0.1
