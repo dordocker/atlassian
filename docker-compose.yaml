@@ -26,6 +26,8 @@ services:
     restart: always
     build:
       context: bitbucket
+    ports:
+      - "7999:7999"
     links:
       - database
     volumes:
