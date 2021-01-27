@@ -13,14 +13,21 @@ services:
       atlassian_network:
         ipv4_address: 172.18.0.4
 
-  # confluence:
-  #   image: cptactionhank/atlassian-confluence:6.9.0
-  #   restart: always
-  #   links:
-  #     - database
-  #   volumes:
-  #     - confluence-data:/var/atlassian/confluence
-
+  confluence:
+    image: wangcl/atlassian-confluence:7.9.3
+    restart: always
+    build:
+      context: confluence
+    ports:
+      - "8090:8090"
+    links:
+      - database
+    volumes:
+      - confluence-data:/var/atlassian/confluence
+    networks:
+      atlassian_network:
+        ipv4_address: 172.18.0.2
+  
   bitbucket:
     image: atlassian/bitbucket-server:6.3.1
     restart: always
@@ -54,10 +61,10 @@ services:
     restart: always
     ports:
       - "80:80"
-    links:
-      - jira
-      # - confluence
-      - bitbucket
+    # links:
+    #   - jira
+    #   # - confluence
+    #   - bitbucket
     volumes:
     - ./:/src
     command: bash /src/scripts/run_nginx.sh
@@ -73,12 +80,12 @@ volumes:
       type: none
       device: /opt/data/jira-data
       o: bind
-  # confluence-data:
-  #   driver: local
-  #   driver_opts:
-  #     type: none
-  #     device: /opt/data/confluence-data
-  #     o: bind
+  confluence-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /opt/data/confluence-data
+      o: bind
   bitbucket-data:
     driver: local
     driver_opts:
