@@ -28,6 +28,21 @@ services:
       atlassian_network:
         ipv4_address: 172.18.0.2
   
+  bamboo:
+    image: wangcl/atlassian-bamboo:6.8.0
+    restart: always
+    build:
+      context: bamboo
+    ports:
+      - "8085:8085"
+    links:
+      - database
+    volumes:
+      - bamboo-data:/var/atlassian/bamboo
+    networks:
+      atlassian_network:
+        ipv4_address: 172.18.0.7
+
   bitbucket:
     image: atlassian/bitbucket-server:6.3.1
     restart: always
@@ -35,6 +50,7 @@ services:
       context: bitbucket
     ports:
       - "7999:7999"
+      - "7990:7990"
     links:
       - database
     volumes:
@@ -42,6 +58,18 @@ services:
     networks:
       atlassian_network:
         ipv4_address: 172.18.0.3
+  desk:
+    image: wangcl/atlassian-desk:4.21.0
+    restart: always
+    build:
+      context: desk
+    links:
+      - database
+    volumes:
+      - desk-data:/var/atlassian/jira
+    networks:
+      atlassian_network:
+        ipv4_address: 172.18.0.8
         
   database:
     image: postgres:11
@@ -86,6 +114,18 @@ volumes:
       type: none
       device: /opt/data/confluence-data
       o: bind
+  bamboo-data:
+      driver: local
+      driver_opts:
+        type: none
+        device: /opt/data/bamboo-data
+        o: bind
+  desk-data:
+      driver: local
+      driver_opts:
+        type: none
+        device: /opt/data/desk-data
+        o: bind
   bitbucket-data:
     driver: local
     driver_opts:
