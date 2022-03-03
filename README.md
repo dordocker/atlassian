@@ -12,3 +12,6 @@ java -jar atlassian-agent.jar -p jira -m aaa@bbb.com -n my_name -o http://jira.d
 
 
 java -jar atlassian-agent.jar -d -m test@test.com -n BAT -p com.mohamicorp.confluence.macro.github.mohamicorp-github-macros -o http://doc.test.com -s B8Y2-K68A-1WXX-84TW
+
+
+java -jar atlassian-agent.jar -d -m test@test.com -n BAT -p jsm -o http://jira.test.com -s BUCY-F0LF-81DK-ZSP4

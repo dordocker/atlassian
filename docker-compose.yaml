@@ -9,6 +9,8 @@ services:
       - database
     volumes:
       - jira-data:/var/atlassian/jira
+    environment:
+    - CATALINA_OPTS='-Xmx8G'
     networks:
       atlassian_network:
         ipv4_address: 172.18.0.4

@@ -102,7 +102,7 @@ http {
 
     server {
         listen       80;
-        server_name  maven.${DOMAIN} www.api.${DOMAIN};
+        server_name  maven.${DOMAIN} www.maven.${DOMAIN};
 
         location / {
             proxy_pass              http://192.168.0.217:8081;
@@ -122,6 +122,22 @@ http {
 
         location / {
             proxy_pass              http://bamboo:8085;
+
+            proxy_set_header        X-Forwarded-Host ${DOLLAR}host;
+            proxy_set_header        X-Forwarded-Server ${DOLLAR}host;
+            proxy_set_header        X-Forwarded-For ${DOLLAR}remote_addr;
+            proxy_set_header        X-Real-IP ${DOLLAR}remote_addr;
+
+            proxy_set_header        Host            ${DOLLAR}host;
+        }
+    }
+
+    server {
+        listen       80;
+        server_name  desk.${DOMAIN} www.desk.${DOMAIN};
+
+        location / {
+            proxy_pass              http://desk:8080;
 
             proxy_set_header        X-Forwarded-Host ${DOLLAR}host;
             proxy_set_header        X-Forwarded-Server ${DOLLAR}host;
