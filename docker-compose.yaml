@@ -26,6 +26,11 @@ services:
       - database
     volumes:
       - confluence-data:/var/atlassian/confluence
+    environment:
+    - ATL_PROXY_NAME=doc.dyrs.online
+    - ATL_TOMCAT_SECURE=true
+    - ATL_PROXY_PORT=443
+    - ATL_TOMCAT_SCHEME=https
     networks:
       atlassian_network:
         ipv4_address: 172.18.0.2
@@ -91,6 +96,7 @@ services:
     restart: always
     ports:
       - "80:80"
+      - "443:443"
     # links:
     #   - jira
     #   # - confluence

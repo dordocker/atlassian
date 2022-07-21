@@ -85,6 +85,27 @@ http {
     }
 
     server {
+        listen       443 default ssl;
+
+        server_name  doc.${DOMAIN} www.doc.${DOMAIN};
+
+        access_log  off;
+        ssl on;
+        ssl_certificate /src/configs/nginx/certs/7657829_doc.dyrs.online.pem;
+        ssl_certificate_key /src/configs/nginx/certs/7657829_doc.dyrs.online.key;
+
+        location / {
+            proxy_pass              http://192.168.0.217:8090;
+
+            proxy_set_header        X-Forwarded-Host ${DOLLAR}host;
+            proxy_set_header        X-Forwarded-Server ${DOLLAR}host;
+            proxy_set_header        X-Forwarded-For ${DOLLAR}remote_addr;
+            proxy_set_header        X-Real-IP ${DOLLAR}remote_addr;
+
+            proxy_set_header        Host            ${DOLLAR}host;
+        }
+    }
+    server {
         listen       80;
         server_name  api.${DOMAIN} www.api.${DOMAIN};
 
